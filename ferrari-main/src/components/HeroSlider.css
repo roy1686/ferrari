@@ -1,0 +1,158 @@
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s var(--transition-slow);
+  z-index: 1;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.slide-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 6s linear;
+}
+
+.slide.active .slide-video {
+  transform: scale(1.05); /* Subtle zoom for videos too */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0.1) 70%, rgba(0, 0, 0, 0.8) 100%),
+    radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, transparent 60%);
+  z-index: 1;
+}
+
+.slide-content {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+  color: #fff;
+  width: 90%;
+  max-width: 1000px;
+}
+
+.slide-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  margin-bottom: 20px;
+  color: var(--primary);
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+  transition: opacity var(--transition-expo), transform var(--transition-expo), filter var(--transition-expo);
+  transition-delay: 0.2s;
+  will-change: transform, opacity, filter;
+}
+
+.slide-title {
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  margin-bottom: 20px;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(60px);
+  filter: blur(15px);
+  transition: opacity var(--transition-expo), transform var(--transition-expo), filter var(--transition-expo);
+  transition-delay: 0.3s;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.5);
+  will-change: transform, opacity, filter;
+}
+
+.slide-description {
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+  transition: opacity var(--transition-expo), transform var(--transition-expo), filter var(--transition-expo);
+  transition-delay: 0.4s;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  font-weight: 300;
+  color: #eeeeee;
+  will-change: transform, opacity, filter;
+}
+
+.slide.active .slide-label,
+.slide.active .slide-title,
+.slide.active .slide-description {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+.hero-slider .btn-primary {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity var(--transition-expo), transform var(--transition-expo), box-shadow var(--transition-fluid);
+  transition-delay: 0.5s;
+}
+
+.slide.active .hero-slider .btn-primary {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background var(--transition-fluid), width var(--transition-fluid), border-radius var(--transition-fluid);
+}
+
+.dot.active {
+  background: var(--primary);
+  width: 40px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .slide-title {
+    font-size: 2.5rem;
+  }
+}

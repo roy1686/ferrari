@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&display=swap');
+
+:root {
+  --primary: #CC1200; /* Deep Crimson */
+  --accent: #C9A84C; /* Molten Gold */
+  --bg: #0A0A0A;
+  --ferrari-red: #CC1200;
+  --gold: #C9A84C;
+  --carbon: #0a0a0a;
+  --glass: rgba(255,255,255,0.05);
+  --text: #FFFFFF;
+  --text-muted: #A0A0A0;
+  --nav-bg: rgba(10, 10, 10, 0.8);
+  --transition-expo: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 1s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-medium: 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-fluid: 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+  --transition-fast: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  cursor: none !important; /* Hide default cursor globally */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom fonts helper classes */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Preloader */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 1s var(--transition-slow);
+}
+
+.preloader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.horse-svg {
+  width: 120px;
+  fill: #fff;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: horseFadeIn 1s forwards ease-out;
+}
+
+@keyframes horseFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Global Scroll Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  filter: blur(10px);
+  transition: opacity var(--transition-expo), 
+              transform var(--transition-expo),
+              filter var(--transition-expo);
+  will-change: transform, opacity, filter;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+/* Typography */
+h1, h2, h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.btn-primary {
+  padding: 16px 42px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  transition: transform var(--transition-fluid), box-shadow var(--transition-fluid);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 5px 15px rgba(204, 18, 0, 0.2);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -150%;
+  width: 150%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left var(--transition-fluid);
+  transform: skewX(-20deg);
+}
+
+.btn-primary:hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 15px 30px rgba(204, 18, 0, 0.4);
+}
+
+.btn-primary:hover::after {
+  left: 150%;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
