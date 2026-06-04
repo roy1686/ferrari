@@ -1,0 +1,334 @@
+.war-room-elite {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--carbon);
+  background-image: repeating-linear-gradient(45deg, transparent 2px, rgba(255,255,255,0.015) 4px);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 5%;
+  overflow: hidden;
+}
+
+/* Cursor Spotlight (Idea A) */
+.war-room-elite::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle 800px at var(--cursor-x, -1000px) var(--cursor-y, -1000px), rgba(204, 18, 0, 0.15), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.1s;
+}
+
+/* 3 Drift scan lines */
+.war-scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.war-scanlines::before, .war-scanlines::after, .war-scanlines .line-3 {
+  content: ''; position: absolute; left: 0; right: 0; height: 10px;
+  background: var(--ferrari-red, #CC1200); opacity: 0.06;
+  animation: driftDown 6s infinite linear;
+}
+.war-scanlines::after { animation-delay: -2s; }
+.war-scanlines .line-3 { animation-delay: -4s; }
+
+@keyframes driftDown {
+  from { top: -10px; }
+  to { top: 100%; }
+}
+
+/* Header */
+.war-header {
+  text-align: center;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 2;
+}
+
+.stencil-text {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: letter-spacing 0.3s ease;
+}
+
+.hover-space:hover {
+  letter-spacing: 0.25em;
+}
+
+.war-header h2 { font-size: 3rem; }
+.red-underline { width: 60px; height: 3px; background: var(--ferrari-red); margin: 10px auto; }
+
+
+/* Panels logic */
+.war-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) 2fr minmax(300px, 1fr);
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.war-panel {
+  background: rgba(10,10,10,0.85);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 40px 30px;
+  position: relative;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Brackets via before/after inside a helper pos wrapper */
+.panel-brackets {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+}
+.panel-brackets::before, .panel-brackets::after {
+  content: ''; position: absolute;
+  width: 15px; height: 15px; border: 2px solid var(--ferrari-red);
+}
+.panel-brackets::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+.panel-brackets::after { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.panel-title {
+  color: #888;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+}
+
+/* DRIVER CARDS: Pure CSS 3D */
+.drivers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.driver-card-3d {
+  position: relative;
+  height: 120px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.driver-heartbeat {
+  position: absolute;
+  top: 0; left: -2px; bottom: 0; width: 2px;
+  background: var(--ferrari-red);
+  animation: heartbeat 2s infinite;
+}
+@keyframes heartbeat {
+  0% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.4); opacity: 0.3; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.driver-card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.driver-card-3d:hover .driver-card-inner {
+  transform: rotateY(180deg) scale(1.05);
+  box-shadow: 0 15px 30px rgba(204,18,0,0.3);
+}
+
+.driver-front, .driver-back {
+  position: absolute;
+  top:0; left:0; width: 100%; height: 100%;
+  backface-visibility: hidden;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 4px;
+  padding: 0 20px;
+}
+
+.driver-front {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* pure CSS helmet */
+.helmet-css {
+  width: 60px; height: 60px;
+  background: var(--hem-main);
+  border-radius: 30px 30px 10px 10px / 40px 40px 10px 10px;
+  position: relative;
+  box-shadow: inset -5px -5px 10px rgba(0,0,0,0.5);
+}
+.helmet-visor {
+  position: absolute;
+  top: 15px; left: 5px; right: 5px; height: 25px;
+  background: #000;
+  border-radius: 10px 10px 5px 5px;
+  overflow: hidden;
+  border: 2px solid #222;
+}
+.visor-reflection {
+  position: absolute;
+  top: -10px; left: -10px; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
+}
+.helmet-stripe {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 6px; background: var(--hem-accent);
+}
+
+.d-info { flex: 1; }
+.d-info .d-num { font-size: 1.5rem; color: #555; }
+.d-info h3 { font-size: 1.1rem; }
+.d-info .d-nat { font-size: 0.7rem; color: #888; }
+
+.driver-back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.d-back-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.d-back-row span { color: #888; }
+.d-back-row.highlighted { color: var(--gold); font-weight: 700; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; margin-top: 5px; }
+
+
+/* COUNTDOWN PANEL */
+.countdown-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.blinking-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--ferrari-red); margin-left: 10px;
+  animation: blink 2s infinite;
+}
+.blinking-dot.fast { animation: blink 0.5s infinite; }
+
+.race-target { flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 40px; }
+.race-target h3 { font-size: 2.2rem; letter-spacing: 2px; transition: text-shadow 0.3s, color 0.3s; }
+.race-target .hover-glow:hover { color: var(--ferrari-red); text-shadow: 0 0 20px rgba(204,18,0,0.5); }
+.race-target p { color: #888; margin-top: 10px; }
+
+/* Flip Clock */
+.flip-clock-container {
+  display: flex; gap: 15px; justify-content: center; transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+  transform: scale(1.05); /* as requested */
+  filter: drop-shadow(0 10px 20px rgba(204,18,0,0.2));
+}
+
+.flip-unit { display: flex; flex-direction: column; align-items: center; }
+.flip-val-wrapper {
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  width: 80px; height: 80px;
+  display: flex; justify-content: center; align-items: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
+}
+
+.flip-anim {
+  font-size: 2.5rem; font-weight: 700;
+  animation: flipSlide 0.4s ease forwards;
+}
+
+@keyframes flipSlide {
+  0% { transform: translateY(-30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.pulse-tick .flip-val-wrapper {
+  animation: redFlash 1s infinite alternate;
+}
+@keyframes redFlash {
+  to { border-color: rgba(204,18,0,0.5); color: var(--ferrari-red); }
+}
+
+.flip-unit span { margin-top: 10px; font-size: 0.7rem; color: #666; letter-spacing: 1px; }
+
+.race-day-flash {
+  font-size: 4rem; font-weight: 900; color: var(--ferrari-red);
+  text-shadow: 0 0 30px rgba(204,18,0,0.8);
+  animation: pulseFlash 1s infinite alternate;
+}
+@keyframes pulseFlash { to { transform: scale(1.1); } }
+
+
+/* TELEMETRY */
+.stats-list { display: flex; flex-direction: column; gap: 30px; }
+.stat-row { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; position: relative; }
+.stat-row .stat-lbl { width: 50px; color: #888; }
+.stat-val { width: 40px; text-align: right; font-weight: 700; }
+
+.stat-bar { flex: 1; height: 6px; background: #222; border-radius: 3px; position: relative; overflow: hidden; }
+.bar-fill {
+  position: absolute; top:0; bottom:0; left:0; width: 0;
+  background: var(--ferrari-red); border-radius: 3px;
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bar-fill.animating { width: var(--target-w); }
+
+.shimmer-effect {
+  position: absolute; top:0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+}
+.hover-shimmer:hover .shimmer-effect { animation: shimmer 1s ease forwards; }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+
+/* DRAGGABLE RACE STRIP */
+.war-calendar-strip {
+  margin-top: 40px; display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;
+  scrollbar-width: none;
+  cursor: grab;
+  position: relative; z-index: 2;
+}
+.war-calendar-strip.active { cursor: grabbing; }
+
+.cal-item {
+  min-width: 140px; padding: 15px; border-radius: 4px;
+  background: rgba(255,255,255,0.03);
+  display: flex; align-items: center; gap: 10px;
+  transition: all 0.3s ease; position: relative;
+}
+
+.cal-item:hover { 
+  transform: translateY(-8px) scale(1.05); 
+  box-shadow: 0 10px 20px rgba(204, 18, 0, 0.4); 
+  border-color: var(--ferrari-red);
+  background: rgba(204,18,0,0.15);
+}
+
+.cal-item.done { opacity: 0.4; filter: grayscale(1); }
+.cal-item.current { border-bottom: 3px solid var(--ferrari-red); background: rgba(204,18,0,0.1); }
+.cal-item.active { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+.cal-pill {
+  position: absolute; top: 5px; right: 5px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ferrari-red);
+  box-shadow: 0 0 5px var(--ferrari-red);
+}
+
+.cal-name { font-size: 0.8rem; white-space: nowrap; }
+
+@media (max-width: 1024px) {
+  .war-grid { grid-template-columns: 1fr; }
+  .flip-clock-container { flex-wrap: wrap; }
+}
