@@ -42,6 +42,7 @@ const Preloader = () => {
                alt="Ferrari in Tunnel" 
                className="real-car-img" 
              />
+             <div className="real-car-vignette"></div>
              
              <div className="flicker-headlights">
                <div className="headlight left"></div>

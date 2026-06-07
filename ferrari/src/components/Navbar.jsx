@@ -86,7 +86,8 @@ const botResponses = {
   "f1": "Scuderia Ferrari is the most successful team in Formula 1 history. Visit the War Room section on this page to view live telemetry, circuit layouts, and driver statistics.",
   
   "sound": "Experience the V8 growl and the V12 roar in our project! If you toggle audio on (bottom right icon), you will hear the engines rev up as you scroll and interact.",
-  "v12": "The V12 is the heart and soul of Ferrari. From the Colombo V12 of 1947 to the hypercar engines of the Enzo and LaFerrari, its sound is unmatched. Make sure your sound is unmuted to hear its roar!"
+  "v12": "The V12 is the heart and soul of Ferrari. From the Colombo V12 of 1947 to the hypercar engines of the Enzo and LaFerrari, its sound is unmatched. Make sure your sound is unmuted to hear its roar!",
+  "lewis hamilton": "Lewis Hamilton is a seven-time Formula 1 World Champion who is joining Scuderia Ferrari in 2025. With over 100 Grand Prix wins and pole positions, his historic move to Maranello is one of the most anticipated transfers in motorsport history!"
 };
 
 const getBotResponse = (query) => {
@@ -94,6 +95,7 @@ const getBotResponse = (query) => {
   if (q.includes("first") || q.includes("125")) return botResponses["first ferrari"];
   if (q.includes("enzo")) return botResponses["enzo era"];
   if (q.includes("charles") || q.includes("leclerc")) return botResponses["charles leclerc"];
+  if (q.includes("lewis") || q.includes("hamilton")) return botResponses["lewis hamilton"];
   if (q.includes("configure") || q.includes("configurator") || q.includes("spec") || q.includes("paint") || q.includes("customize")) return botResponses["configure"];
   if (q.includes("racing") || q.includes("f1") || q.includes("telemetry") || q.includes("war room") || q.includes("track")) return botResponses["racing"];
   if (q.includes("sound") || q.includes("engine") || q.includes("v12") || q.includes("v8") || q.includes("roar")) return botResponses["v12"];

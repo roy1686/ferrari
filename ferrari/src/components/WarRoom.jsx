@@ -72,11 +72,20 @@ const WarRoom = () => {
   const [isRaceDay, setIsRaceDay] = useState(false);
   const [telemetryVisible, setTelemetryVisible] = useState(false);
   const [reanimateKey, setReanimateKey] = useState(0);
-  const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
 
   const sectionRef = useRef(null);
   const teleRef = useRef(null);
   const stripRef = useRef(null);
+  const sectionRectRef = useRef(null);
+  const warRoomFrameRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (warRoomFrameRef.current) {
+        cancelAnimationFrame(warRoomFrameRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Telemetry Observer
@@ -140,12 +149,34 @@ const WarRoom = () => {
   };
 
   const handleSectionMouseMove = (e) => {
-    if (sectionRef.current) {
-      const rect = sectionRef.current.getBoundingClientRect();
-      setCursorPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
+    if (!sectionRef.current) return;
+    let rect = sectionRectRef.current;
+    if (!rect) {
+      rect = sectionRef.current.getBoundingClientRect();
+      sectionRectRef.current = rect;
+    }
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (warRoomFrameRef.current) {
+      cancelAnimationFrame(warRoomFrameRef.current);
+    }
+
+    warRoomFrameRef.current = requestAnimationFrame(() => {
+      if (sectionRef.current) {
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        sectionRef.current.style.setProperty('--cursor-x', `${x}px`);
+        sectionRef.current.style.setProperty('--cursor-y', `${y}px`);
+      }
+    });
+  };
+
+  const handleSectionMouseLeave = () => {
+    sectionRectRef.current = null;
+    if (warRoomFrameRef.current) {
+      cancelAnimationFrame(warRoomFrameRef.current);
+      warRoomFrameRef.current = null;
     }
   };
 
@@ -154,7 +185,7 @@ const WarRoom = () => {
       className="war-room-elite" 
       ref={sectionRef}
       onMouseMove={handleSectionMouseMove}
-      style={{ '--cursor-x': `${cursorPos.x}px`, '--cursor-y': `${cursorPos.y}px` }}
+      onMouseLeave={handleSectionMouseLeave}
     >
       <div className="war-scanlines"></div>
       

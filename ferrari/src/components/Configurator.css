@@ -34,7 +34,7 @@
 .model-card-3d {
   position: relative; background: #111; border: 1px solid var(--glass); padding: 60px 40px;
   text-align: center; border-radius: 4px; cursor: pointer; transform-style: preserve-3d;
-  transition: transform 0.1s ease-out, box-shadow 0.3s ease, border-color 0.3s ease; overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s ease; overflow: hidden;
 }
 .card-glare { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; transform: translateZ(10px); }
 .model-card-3d.selected { border-color: rgba(204, 18, 0, 0.4); box-shadow: 0 0 40px rgba(204, 18, 0, 0.1); transform: scale(1.02) !important; }

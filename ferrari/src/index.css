@@ -26,7 +26,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  cursor: none !important; /* Hide default cursor globally */
 }
 
 html {
@@ -176,27 +175,7 @@ body::before {
   mix-blend-mode: screen;
 }
 
-/* Show standard browser pointers ONLY on interactive elements within the Ask Me section */
-.ask-me-btn,
-.ask-me-btn *,
-.chat-drawer a,
-.chat-drawer button,
-.chat-drawer [role="button"],
-.chat-drawer .chat-chip,
-.chat-drawer select,
-.chat-drawer option {
-  cursor: pointer !important;
-}
 
-.chat-drawer input,
-.chat-drawer textarea {
-  cursor: pointer !important;
-}
-
-.chat-drawer .chat-close-btn,
-.chat-drawer .chat-close-btn * {
-  cursor: none !important;
-}
 
 body.typing-hide-cursor,
 body.typing-hide-cursor * {

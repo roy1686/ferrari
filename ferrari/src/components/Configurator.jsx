@@ -27,7 +27,8 @@ const INTERIORS = [
   { id: 'rosso', name: 'Rosso', hex: '#CC1200', quote: 'Built for the legend' }
 ];
 
-import DynamicCarSVG from './DynamicCarSVG';
+
+import SF90Rotator from './SF90Rotator';
 
 // Helper: Custom CountUp Component
 const CountUp = ({ target, suffix = '', decimals = 0, active }) => {
@@ -56,17 +57,49 @@ const CountUp = ({ target, suffix = '', decimals = 0, active }) => {
 // Helper: Magnetic Button
 const MagneticButton = ({ children, onClick, className = '', disabled = false, type = 'button' }) => {
   const btnRef = useRef(null);
+  const rectRef = useRef(null);
+  const animationFrameRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   const handleMouseMove = (e) => {
-    if (disabled || window.innerWidth < 768) return; 
-    const rect = btnRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    btnRef.current.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    if (disabled || window.innerWidth < 768 || !btnRef.current) return; 
+    let rect = rectRef.current;
+    if (!rect) {
+      rect = btnRef.current.getBoundingClientRect();
+      rectRef.current = rect;
+    }
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    animationFrameRef.current = requestAnimationFrame(() => {
+      const x = clientX - rect.left - rect.width / 2;
+      const y = clientY - rect.top - rect.height / 2;
+      btnRef.current.style.transition = 'transform 0s';
+      btnRef.current.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    });
   };
 
   const handleMouseLeave = () => {
-    if (btnRef.current) btnRef.current.style.transform = `translate(0px, 0px)`;
+    rectRef.current = null;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (btnRef.current) {
+      btnRef.current.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+      btnRef.current.style.transform = `translate(0px, 0px)`;
+    }
   };
 
   return (
@@ -98,33 +131,66 @@ const Configurator = () => {
     cardRefs.current = Array(MODELS.length).fill().map((_, i) => cardRefs.current[i] || React.createRef());
   }
 
-  const handleCardMove = (e, targetRef, isSelected) => {
+  const rectsRef = useRef({});
+  const cardAnimationFrameRef = useRef({});
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      Object.values(cardAnimationFrameRef.current).forEach(id => cancelAnimationFrame(id));
+    };
+  }, []);
+
+  const handleCardMove = (e, modelId, targetRef, isSelected) => {
     if (window.innerWidth < 768 || isSelected) return; 
     const el = targetRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-    const glareX = (x / rect.width) * 100;
-    const glareY = (y / rect.height) * 100;
-    
-    el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    const glare = el.querySelector('.card-glare');
-    if (glare) {
-      glare.style.opacity = 1;
-      glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`;
+    let rect = rectsRef.current[modelId];
+    if (!rect) {
+      rect = el.getBoundingClientRect();
+      rectsRef.current[modelId] = rect;
     }
+    
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    
+    if (cardAnimationFrameRef.current[modelId]) {
+      cancelAnimationFrame(cardAnimationFrameRef.current[modelId]);
+    }
+    
+    cardAnimationFrameRef.current[modelId] = requestAnimationFrame(() => {
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -12;
+      const rotateY = ((x - centerX) / centerX) * 12;
+      const glareX = (x / rect.width) * 100;
+      const glareY = (y / rect.height) * 100;
+      
+      el.style.transition = 'transform 0s';
+      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      const glare = el.querySelector('.card-glare');
+      if (glare) {
+        glare.style.opacity = 1;
+        glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`;
+      }
+    });
   };
 
-  const handleCardLeave = (targetRef, isSelected) => {
+  const handleCardLeave = (modelId, targetRef, isSelected) => {
+    delete rectsRef.current[modelId];
+    if (cardAnimationFrameRef.current[modelId]) {
+      cancelAnimationFrame(cardAnimationFrameRef.current[modelId]);
+      delete cardAnimationFrameRef.current[modelId];
+    }
+    
     if (isSelected) return;
     const el = targetRef.current;
     if (el) {
+      el.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
       el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
       const glare = el.querySelector('.card-glare');
       if (glare) glare.style.opacity = 0;
@@ -206,11 +272,24 @@ const Configurator = () => {
                   key={model.id}
                   ref={cardRefs.current[idx]}
                   className={`model-card-3d ${isSelected ? 'selected' : ''}`}
-                  onMouseMove={(e) => handleCardMove(e, cardRefs.current[idx], isSelected)}
-                  onMouseLeave={() => handleCardLeave(cardRefs.current[idx], isSelected)}
+                  onMouseMove={(e) => handleCardMove(e, model.id, cardRefs.current[idx], isSelected)}
+                  onMouseLeave={() => handleCardLeave(model.id, cardRefs.current[idx], isSelected)}
                   onClick={() => {
                     SoundManager.play('gear-click', 0.08);
                     setSelectedModel(model);
+                    // Reset inline styles for all cards on selection
+                    MODELS.forEach((m, i) => {
+                      const cardEl = cardRefs.current[i]?.current;
+                      if (cardEl) {
+                        cardEl.style.transform = '';
+                        cardEl.style.transition = '';
+                        const glare = cardEl.querySelector('.card-glare');
+                        if (glare) {
+                          glare.style.opacity = '0';
+                          glare.style.background = '';
+                        }
+                      }
+                    });
                   }}
                 >
                   <div className="card-glare"></div>
@@ -236,8 +315,7 @@ const Configurator = () => {
         <div className={`step-view ${step === 2 && !isCompleted ? 'active' : 'hidden'}`}>
           <div className="color-stage">
             <div className="svg-wrapper cinematic-car-img" style={{ '--selected-color-alpha': 'transparent', '--bg-wash': selectedColor.hex + '33', boxShadow: 'none' }}>
-              <div className="img-wash"></div>
-              <DynamicCarSVG idSuffix="step2" model={selectedModel} color={selectedColor} interior={null} />
+              {selectedModel && step === 2 && <SF90Rotator model={selectedModel} color={selectedColor} />}
             </div>
             <div className="swatch-panel">
                <div className="active-swatch-details">
@@ -293,9 +371,12 @@ const Configurator = () => {
            <div className="completion-content-enhanced">
               
               {!imgError ? (
-                <div className="cinematic-car-img" style={{ '--selected-color-alpha': selectedColor.hex + '66', '--bg-wash': selectedColor.hex + '1a' }}>
-                   <div className="img-wash"></div>
-                   <DynamicCarSVG idSuffix="step3" model={selectedModel} color={selectedColor} interior={selectedInterior} />
+                <div className="cinematic-car-img" style={{ 
+                  '--selected-color-alpha': 'transparent', 
+                  '--bg-wash': 'transparent',
+                  boxShadow: 'none' 
+                }}>
+                   {selectedModel && isCompleted && <SF90Rotator model={selectedModel} color={selectedColor} />}
                 </div>
               ) : renderPlaceholder()}
 
